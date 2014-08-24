@@ -30,6 +30,17 @@ Creating training and validating data sets
 
 ```r
 trainingCSV = read.csv("pml-training.csv")
+```
+
+```
+## Warning: cannot open file 'pml-training.csv': No such file or directory
+```
+
+```
+## Error: cannot open the connection
+```
+
+```r
 inTrain <- createDataPartition(trainingCSV$classe, p=0.60, list=FALSE)
 training <- trainingCSV[inTrain, ]
 validation <- trainingCSV[-inTrain, ]
@@ -203,15 +214,33 @@ We try and apply our model to the testing csv provided. But before that we pply 
 
 ```r
 testing =  read.csv("pml-testing.csv")
+```
+
+```
+## Warning: cannot open file 'pml-testing.csv': No such file or directory
+```
+
+```
+## Error: cannot open the connection
+```
+
+```r
 dim(testing)
 ```
 
 ```
-## [1]  20 160
+## [1] 20 68
 ```
 
 ```r
 testing<-testing[,goodVar]
+```
+
+```
+## Error: undefined columns selected
+```
+
+```r
 dim(testing)
 ```
 
