@@ -1,0 +1,166 @@
+---
+title: "MACHINE LEARNING-Peer Assignment"
+output: html_document
+---
+###SYNOPSIS
+
+The aim of this exercise is to present the results of the Practical Machine Learning -Peer Assesment. This report is generated using a single R markdown file that can be processed by knitr and generate an output HTML file. The basic outline followed here is as follows-
+
+1.Since the data set has so many columns- we have decided to make a class prediction using **Random Forests model**(there is no need to cross validate to get an unbiased estimate)
+
+2.Before subjecting our data set to the prediction modelling - a little data cleaning has been done. All the columns with less than 60% data filled in is filtered out.
+
+3.The model accuracy over the validating data set is 99.5 %
+
+4.The model gives good estimates and predictions using the above model gave 20 outcomes which when submitted to the latter half of the assignment(Course project submission)- were evaluated as correct. 
+
+
+####Loading and Preprocessing the data
+
+Loading the required packages
+```{r, echo=TRUE}
+
+library(caret)
+library(rpart)
+library(randomForest)
+set.seed(1111)
+
+
+
+```
+
+Creating training and validating data sets
+```{r, echo=TRUE}
+
+
+trainingCSV = read.csv("pml-training.csv")
+inTrain <- createDataPartition(trainingCSV$classe, p=0.60, list=FALSE)
+training <- trainingCSV[inTrain, ]
+validation <- trainingCSV[-inTrain, ]
+
+
+
+```
+
+Trying to visualise the data set.
+
+Some further exploratory analysis-to see the relationship between various variables.
+Trying to see the tabular correlation matrix of the variable which are highly correlated.
+
+
+```{r, echo=TRUE}
+
+pairs(training[1:10000,1:10])
+
+
+
+```
+
+
+Since a lot of the columns have null/missing data it is not very useful to use them in our model. Thus filtering these columns out. Thus for the same firsst 10 columns we plot pairs before and after excluding the data. This can help us show resonable comparison.
+
+
+
+```{r, echo=TRUE}
+goodVar<-c((colSums(is.na(training[,-160])) >= 0.4*nrow(training)),160)
+training<-training[,goodVar]
+dim(training)
+
+validation<-validation[,goodVar]
+dim(validation)
+
+training<-training[complete.cases(training),]
+dim(training)
+
+##pairs(training[1:10000,1:10])
+```
+
+
+
+
+Applying Random forest training on the train set-
+
+```{r, echo=TRUE}
+
+model <- randomForest(classe~.,data=training)
+print(model)
+
+```
+
+
+
+
+```{r, echo=TRUE}
+
+head(importance(model))
+
+```
+
+
+Evaluating the model on the evaluation dataset.
+
+```{r, echo=TRUE}
+
+
+plot(predict(model,newdata=validation[,-ncol(validation)]),validation$classe)
+
+
+```
+
+
+
+
+
+```{r, echo=TRUE}
+confusionMatrix(predict(model,newdata=validation[,-ncol(validation)]),validation$classe)
+
+
+```
+
+
+
+```{r, echo=TRUE}
+
+accurate<-c(as.numeric(predict(model,newdata=validation[,-ncol(validation)])==validation$classe))
+accuracy<-sum(accurate)*100/nrow(validation)
+accuracy
+
+```
+We try and apply our model to the testing csv provided. But before that we pply the same transformations we used on the training sets
+
+```{r, echo=TRUE}
+
+testing =  read.csv("pml-testing.csv")
+dim(testing)
+
+testing<-testing[,goodVar]
+dim(testing)
+
+```
+
+
+Saving the predictions and creating functions to save the output files for the prediction assignment submission.
+Since we had a good accuracy of the model made all the 20 submissions are correct.
+
+```{r, echo=TRUE}
+
+predictions<-predict(model,newdata=testing)
+
+
+# pml_write_files = function(x){
+#   n = length(x)
+#   for(i in 1:n){
+#     filename = paste0("./answers/problem_id_",i,".txt")
+#     write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
+#   }
+# }
+# 
+# pml_write_files(predictions)
+
+```
+
+
+Thank you for reading
+
+------Have a good day-----
+
