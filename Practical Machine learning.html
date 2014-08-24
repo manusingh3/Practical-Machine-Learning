@@ -212,15 +212,7 @@ set.seed(1111)
 <p>Creating training and validating data sets</p>
 
 <pre><code class="r">trainingCSV = read.csv(&quot;pml-training.csv&quot;)
-</code></pre>
-
-<pre><code>## Warning: cannot open file &#39;pml-training.csv&#39;: No such file or directory
-</code></pre>
-
-<pre><code>## Error: cannot open the connection
-</code></pre>
-
-<pre><code class="r">inTrain &lt;- createDataPartition(trainingCSV$classe, p=0.60, list=FALSE)
+inTrain &lt;- createDataPartition(trainingCSV$classe, p=0.60, list=FALSE)
 training &lt;- trainingCSV[inTrain, ]
 validation &lt;- trainingCSV[-inTrain, ]
 </code></pre>
@@ -351,27 +343,14 @@ accuracy
 <p>We try and apply our model to the testing csv provided. But before that we pply the same transformations we used on the training sets</p>
 
 <pre><code class="r">testing =  read.csv(&quot;pml-testing.csv&quot;)
+dim(testing)
 </code></pre>
 
-<pre><code>## Warning: cannot open file &#39;pml-testing.csv&#39;: No such file or directory
-</code></pre>
-
-<pre><code>## Error: cannot open the connection
-</code></pre>
-
-<pre><code class="r">dim(testing)
-</code></pre>
-
-<pre><code>## [1] 20 68
+<pre><code>## [1]  20 160
 </code></pre>
 
 <pre><code class="r">testing&lt;-testing[,goodVar]
-</code></pre>
-
-<pre><code>## Error: undefined columns selected
-</code></pre>
-
-<pre><code class="r">dim(testing)
+dim(testing)
 </code></pre>
 
 <pre><code>## [1] 20 68
